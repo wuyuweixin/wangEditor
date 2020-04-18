@@ -3,10 +3,10 @@ import Editor from './editor/index.js'
 
 // 检验是否浏览器环境
 try {
-    document
+  document
 } catch (ex) {
-    throw new Error('请在浏览器环境下运行')
-} 
+  throw new Error('请在浏览器环境下运行')
+}
 
 // polyfill
 polyfill()
@@ -17,8 +17,8 @@ const inlinecss = '__INLINE_CSS__'
 // 将 css 代码添加到 <style> 中
 let style = document.createElement('style')
 style.type = 'text/css'
-style.innerHTML= inlinecss
+style.innerHTML = inlinecss
 document.getElementsByTagName('HEAD').item(0).appendChild(style)
 
 // 返回
-export default (window.wangEditor || Editor)
+export default window.wangEditor || Editor
