@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const formidable = require('formidable')
-const util  = require('./util.js')
+const util = require('./util.js')
 
 const koa = require('koa')
 const app = koa()
@@ -14,14 +14,23 @@ onerror(app)
 const bodyParser = require('koa-bodyparser')
 app.use(bodyParser())
 
+app.use(function* (next) {
+    yield next;
+    if (parseInt(this.status) === 404) {
+        this.redirect('/index.html')
+    }
+})
+
 // 静态文件服务，针对 html js css fonts 文件
 const staticCache = require('koa-static-cache')
+
 function setStaticCache() {
     const exampleDir = path.join(__dirname, '..', '..', 'example')
     const releaseDir = path.join(__dirname, '..', '..', 'release')
     app.use(staticCache(exampleDir))
     app.use(staticCache(releaseDir))
 }
+
 setStaticCache()
 
 // 配置路由
@@ -79,7 +88,8 @@ router.post('/upload-img', function* () {
     // 返回结果
     this.body = JSON.stringify(data)
 })
-app.use(router.routes()).use(router.allowedMethods());
+
+app.use(router.routes()).use(router.allowedMethods())
 
 // 启动服务
 app.listen(3000)
