@@ -49,3 +49,12 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
