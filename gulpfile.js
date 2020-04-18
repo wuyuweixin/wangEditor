@@ -1,9 +1,6 @@
-const path = require('path')
-const fs = require('fs')
 const { series, watch, src, dest } = require('gulp')
 const rollup = require('rollup')
 const uglify = require('gulp-uglify')
-const sourcemaps = require('gulp-sourcemaps')
 const rename = require('gulp-rename')
 const less = require('gulp-less')
 const concat = require('gulp-concat')
@@ -11,9 +8,8 @@ const cssmin = require('gulp-cssmin')
 const postcss = require('gulp-postcss')
 const autoprefixer = require('autoprefixer')
 const cssgrace = require('cssgrace')
-const resolve = require('rollup-plugin-node-resolve')
+const resolve = require('@rollup/plugin-node-resolve')
 const babel = require('rollup-plugin-babel')
-const gulpReplace = require('gulp-replace')
 
 // 拷贝 fonts 文件
 function copyFonts(cb) {
@@ -32,20 +28,6 @@ function css(cb) {
       autoprefixer,
       cssgrace
     ]))
-    // 将 css 引用的字体文件转换为 base64 格式
-    .pipe(gulpReplace(/'fonts\/w-e-icon\..+?'/gm, function(fontFile) {
-      // fontFile 例如 'fonts/w-e-icon.eot?paxlku'
-      fontFile = fontFile.slice(0, -1).slice(1)
-      fontFile = fontFile.split('?')[0]
-      const ext = fontFile.split('.')[1]
-      // 读取文件内容，转换为 base64 格式
-      const filePath = path.resolve(__dirname, 'release', fontFile)
-      const content = fs.readFileSync(filePath)
-      const base64 = content.toString('base64')
-      // 返回
-      return 'data:application/x-font-' + ext + ';charset=utf-8;base64,' + base64
-    }))
-    // 产出文件的位置
     .pipe(dest('./release'))
     // 产出的压缩后的文件名
     .pipe(rename('wangEditor.min.css'))
@@ -57,9 +39,9 @@ function css(cb) {
 // 处理 JS
 function script(cb) {
   // rollup 打包 js 模块
-  return rollup.rollup({
+  rollup.rollup({
     // 入口文件
-    entry: './src/js/index.js',
+    input: './src/js/index.js',
     plugins: [
       resolve(),
       babel({
@@ -68,52 +50,65 @@ function script(cb) {
     ]
   }).then(bundle => {
     bundle.write({
-      // 产出文件使用 umd 规范（即兼容 amd cjs 和 iife）
-      format: 'umd',
       // iife 规范下的全局变量名称
-      moduleName: 'wangEditor',
+      name: 'wangEditor',
       // 产出的未压缩的文件名
-      dest: './release/wangEditor.js'
+      file: './release/wangEditor.js',
+      // 产出文件使用 umd 规范（即兼容 amd cjs 和 iife）
+      format: 'umd'
     }).then(() => {
       // 待 rollup 打包 js 完毕之后，再进行如下的处理：
       src('./release/wangEditor.js')
-        // inline css
-        .pipe(gulpReplace(/__INLINE_CSS__/gm, function() {
-          // 读取 css 文件内容
-          const filePath = path.resolve(__dirname, 'release', 'wangEditor.css')
-          let content = fs.readFileSync(filePath).toString('utf-8')
-          // 替换 \n \ ' 三个字符
-          content = content.replace(/\n/g, '').replace(/\\/g, '\\\\').replace(/'/g, '\\\'')
-          return content
-        }))
-        .pipe(dest('./release'))
-        .pipe(sourcemaps.init())
         // 压缩
         .pipe(uglify())
         // 产出的压缩的文件名
         .pipe(rename('wangEditor.min.js'))
         // 生成 sourcemap
-        .pipe(sourcemaps.write(''))
         .pipe(dest('./release'))
       cb()
     })
   })
 }
 
-function dev(cb) {
-  // 监听 js 原始文件的变化
-  watch('./src/js/**/*.js', script)
+function transpileJS(cb) {
+  // rollup 打包 js 模块
+  rollup.rollup({
+    // 入口文件
+    input: './src/js/index.js',
+    plugins: [
+      resolve(),
+      babel({ exclude: 'node_modules/**' })
+    ]
+  }).then(bundle => {
+    bundle.write({
+      name: 'wangEditor',
+      file: './release/wangEditor.js',
+      format: 'umd'
+    }).then(cb).catch(cb)
+  }).catch(cb)
+}
 
-  // 监听 css 原始文件的变化
-  watch('./src/less/**/*.less', css)
-
-  // 监听 icon.less 的变化，变化时重新拷贝 fonts 文件
-  watch('./src/less/icon.less', copyFonts)
-
+function transpileCSS(cb) {
+  src('./src/less/**/*.less')
+    .pipe(less())
+    .pipe(concat('wangEditor.css'))
+    .pipe(postcss([
+      autoprefixer,
+      cssgrace
+    ]))
+    .pipe(dest('./release'))
   cb()
 }
 
-exports.dev = dev
+function watchFileChange(cb) {
+  // 监听 js 原始文件的变化
+  watch('./src/js/**/*.js', transpileJS)
+  // 监听 css 原始文件的变化
+  watch('./src/less/**/*.less', transpileCSS)
+  cb()
+}
+
+exports.watch = watchFileChange
 
 // 默认任务配置
 exports.default = series(copyFonts, css, script)
