@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const {series, paralle, watch, src, dest, task} = require('gulp');
+const {series, watch, src, dest} = require('gulp');
 const rollup = require('rollup')
 const uglify = require('gulp-uglify')
 const sourcemaps = require('gulp-sourcemaps')
