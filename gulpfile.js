@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const {series, watch, src, dest} = require('gulp');
+const { series, watch, src, dest } = require('gulp')
 const rollup = require('rollup')
 const uglify = require('gulp-uglify')
 const sourcemaps = require('gulp-sourcemaps')
@@ -8,7 +8,6 @@ const rename = require('gulp-rename')
 const less = require('gulp-less')
 const concat = require('gulp-concat')
 const cssmin = require('gulp-cssmin')
-const eslint = require('rollup-plugin-eslint')
 const postcss = require('gulp-postcss')
 const autoprefixer = require('autoprefixer')
 const cssgrace = require('cssgrace')
@@ -25,33 +24,33 @@ function copyFonts(cb) {
 // 处理 css
 function css(cb) {
   src('./src/less/**/*.less')
-      .pipe(less())
-      // 产出的未压缩的文件名
-      .pipe(concat('wangEditor.css'))
-      // 配置 postcss
-      .pipe(postcss([
-        autoprefixer,
-        cssgrace
-      ]))
-      // 将 css 引用的字体文件转换为 base64 格式
-      .pipe(gulpReplace(/'fonts\/w-e-icon\..+?'/gm, function (fontFile) {
-        // fontFile 例如 'fonts/w-e-icon.eot?paxlku'
-        fontFile = fontFile.slice(0, -1).slice(1)
-        fontFile = fontFile.split('?')[0]
-        const ext = fontFile.split('.')[1];
-        // 读取文件内容，转换为 base64 格式
-        const filePath = path.resolve(__dirname, 'release', fontFile);
-        const content = fs.readFileSync(filePath);
-        const base64 = content.toString('base64');
-        // 返回
-        return 'data:application/x-font-' + ext + ';charset=utf-8;base64,' + base64
-      }))
-      // 产出文件的位置
-      .pipe(dest('./release'))
-      // 产出的压缩后的文件名
-      .pipe(rename('wangEditor.min.css'))
-      .pipe(cssmin())
-      .pipe(dest('./release'))
+    .pipe(less())
+    // 产出的未压缩的文件名
+    .pipe(concat('wangEditor.css'))
+    // 配置 postcss
+    .pipe(postcss([
+      autoprefixer,
+      cssgrace
+    ]))
+    // 将 css 引用的字体文件转换为 base64 格式
+    .pipe(gulpReplace(/'fonts\/w-e-icon\..+?'/gm, function(fontFile) {
+      // fontFile 例如 'fonts/w-e-icon.eot?paxlku'
+      fontFile = fontFile.slice(0, -1).slice(1)
+      fontFile = fontFile.split('?')[0]
+      const ext = fontFile.split('.')[1]
+      // 读取文件内容，转换为 base64 格式
+      const filePath = path.resolve(__dirname, 'release', fontFile)
+      const content = fs.readFileSync(filePath)
+      const base64 = content.toString('base64')
+      // 返回
+      return 'data:application/x-font-' + ext + ';charset=utf-8;base64,' + base64
+    }))
+    // 产出文件的位置
+    .pipe(dest('./release'))
+    // 产出的压缩后的文件名
+    .pipe(rename('wangEditor.min.css'))
+    .pipe(cssmin())
+    .pipe(dest('./release'))
   cb()
 }
 
@@ -62,8 +61,6 @@ function script(cb) {
     // 入口文件
     entry: './src/js/index.js',
     plugins: [
-      // 对原始文件启动 eslint 检查，配置参见 ./.eslintrc.json
-      eslint({fix: true}),
       resolve(),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
@@ -80,24 +77,24 @@ function script(cb) {
     }).then(() => {
       // 待 rollup 打包 js 完毕之后，再进行如下的处理：
       src('./release/wangEditor.js')
-          // inline css
-          .pipe(gulpReplace(/__INLINE_CSS__/gm, function () {
-            // 读取 css 文件内容
-            const filePath = path.resolve(__dirname, 'release', 'wangEditor.css');
-            let content = fs.readFileSync(filePath).toString('utf-8');
-            // 替换 \n \ ' 三个字符
-            content = content.replace(/\n/g, '').replace(/\\/g, '\\\\').replace(/'/g, '\\\'')
-            return content
-          }))
-          .pipe(dest('./release'))
-          .pipe(sourcemaps.init())
-          // 压缩
-          .pipe(uglify())
-          // 产出的压缩的文件名
-          .pipe(rename('wangEditor.min.js'))
-          // 生成 sourcemap
-          .pipe(sourcemaps.write(''))
-          .pipe(dest('./release'))
+        // inline css
+        .pipe(gulpReplace(/__INLINE_CSS__/gm, function() {
+          // 读取 css 文件内容
+          const filePath = path.resolve(__dirname, 'release', 'wangEditor.css')
+          let content = fs.readFileSync(filePath).toString('utf-8')
+          // 替换 \n \ ' 三个字符
+          content = content.replace(/\n/g, '').replace(/\\/g, '\\\\').replace(/'/g, '\\\'')
+          return content
+        }))
+        .pipe(dest('./release'))
+        .pipe(sourcemaps.init())
+        // 压缩
+        .pipe(uglify())
+        // 产出的压缩的文件名
+        .pipe(rename('wangEditor.min.js'))
+        // 生成 sourcemap
+        .pipe(sourcemaps.write(''))
+        .pipe(dest('./release'))
       cb()
     })
   })
@@ -119,4 +116,4 @@ function dev(cb) {
 exports.dev = dev
 
 // 默认任务配置
-exports.default = series(copyFonts, css, script);
+exports.default = series(copyFonts, css, script)
