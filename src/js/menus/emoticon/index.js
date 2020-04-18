@@ -42,7 +42,7 @@ class Emoticon {
       if (emotType === 'emoji') {
         content.forEach(item => {
           if (item) {
-            faceHtml += '<span class="w-e-item">' + item + '</span>'
+            faceHtml += `<span class="w-e-item">${item}</span>`
           }
         })
       }
@@ -53,7 +53,7 @@ class Emoticon {
           const alt = item.alt
           if (src) {
             // 加一个 data-w-e 属性，点击图片的时候不再提示编辑图片
-            faceHtml += '<span class="w-e-item"><img src="' + src + '" alt="' + alt + '" data-w-e="1"/></span>'
+            faceHtml += `<span class="w-e-item"><img src="${src}" alt="${alt}" data-w-e="1"/></span>`
           }
         })
       }
@@ -76,7 +76,7 @@ class Emoticon {
                 insertHtml = $target.parent().html()
               } else {
                 // 插入 emoji
-                insertHtml = '<span>' + $target.html() + '</span>'
+                insertHtml = `<span>${$target.html()}</span>`
               }
 
               this._insert(insertHtml)

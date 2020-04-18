@@ -28,7 +28,7 @@ export function getPasteHtml(e, filterStyle, ignoreImg) {
     pasteHtml = clipboardData.getData('text/html')
   }
   if (!pasteHtml && pasteText) {
-    pasteHtml = '<p>' + replaceHtmlSymbol(pasteText) + '</p>'
+    pasteHtml = `<p>${replaceHtmlSymbol(pasteText)}</p>`
   }
   if (!pasteHtml) {
     return

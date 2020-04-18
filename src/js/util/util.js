@@ -64,7 +64,7 @@ export function replaceHtmlSymbol(html) {
 // 返回百分比的格式
 export function percentFormat(number) {
   number = parseInt(number * 100)
-  return number + '%'
+  return `${number}%`
 }
 
 // 判断是不是 function

@@ -34,7 +34,7 @@ class Progress {
     // 改变进度（节流，100ms 渲染一次）
     if (Date.now() - this._time > 100) {
       if (progress <= 1) {
-        $bar.css('width', progress * 100 + '%')
+        $bar.css('width', `${progress * 100}%`)
         this._time = Date.now()
       }
     }

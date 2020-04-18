@@ -32,7 +32,7 @@ class Panel {
     // panel 的容器
     const $container = $('<div class="w-e-panel-container"></div>')
     const width = opt.width || 300 // 默认 300px
-    $container.css('width', width + 'px').css('margin-left', (0 - width) / 2 + 'px')
+    $container.css('width', `${width}px`).css('margin-left', `${(0 - width) / 2}px`)
 
     // 添加关闭按钮
     const $closeBtn = $('<i class="w-e-icon-close w-e-panel-close"></i>')
@@ -49,7 +49,7 @@ class Panel {
     // 设置高度
     const height = opt.height
     if (height) {
-      $tabContentContainer.css('height', height + 'px').css('overflow-y', 'auto')
+      $tabContentContainer.css('height', `${height}px`).css('overflow-y', 'auto')
     }
 
     // tabs

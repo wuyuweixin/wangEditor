@@ -381,7 +381,7 @@ class Text {
       if (nodeName === 'CODE' || nodeName === 'PRE') {
         if (pasteTextHandle && isFunction(pasteTextHandle)) {
           // 用户自定义过滤处理粘贴内容
-          pasteText = '' + (pasteTextHandle(pasteText) || '')
+          pasteText = `${pasteTextHandle(pasteText) || ''}`
         }
         editor.cmd.do('insertHTML', `<p>${pasteText}</p>`)
         return
@@ -403,14 +403,14 @@ class Text {
         // 因此执行 insertHTML 会报错
         if (pasteTextHandle && isFunction(pasteTextHandle)) {
           // 用户自定义过滤处理粘贴内容
-          pasteHtml = '' + (pasteTextHandle(pasteHtml) || '')
+          pasteHtml = `${pasteTextHandle(pasteHtml) || ''}`
         }
         editor.cmd.do('insertHTML', pasteHtml)
       } catch (ex) {
         // 此时使用 pasteText 来兼容一下
         if (pasteTextHandle && isFunction(pasteTextHandle)) {
           // 用户自定义过滤处理粘贴内容
-          pasteText = '' + (pasteTextHandle(pasteText) || '')
+          pasteText = `${pasteTextHandle(pasteText) || ''}`
         }
         editor.cmd.do('insertHTML', `<p>${pasteText}</p>`)
       }

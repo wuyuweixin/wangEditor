@@ -56,11 +56,11 @@ class Table {
           events: [
             {
               // 点击按钮，插入表格
-              selector: '#' + btnInsertId,
+              selector: `#${btnInsertId}`,
               type: 'click',
               fn: () => {
-                const rowNum = parseInt($('#' + textRowNum).val())
-                const colNum = parseInt($('#' + textColNum).val())
+                const rowNum = parseInt($(`#${textRowNum}`).val())
+                const colNum = parseInt($(`#${textColNum}`).val())
 
                 if (rowNum && colNum && rowNum > 0 && colNum > 0) {
                   // form 数据有效
@@ -145,7 +145,7 @@ class Table {
           events: [
             {
               // 增加行
-              selector: '#' + addRowBtnId,
+              selector: `#${addRowBtnId}`,
               type: 'click',
               fn: () => {
                 this._addRow()
@@ -155,7 +155,7 @@ class Table {
             },
             {
               // 增加列
-              selector: '#' + addColBtnId,
+              selector: `#${addColBtnId}`,
               type: 'click',
               fn: () => {
                 this._addCol()
@@ -165,7 +165,7 @@ class Table {
             },
             {
               // 删除行
-              selector: '#' + delRowBtnId,
+              selector: `#${delRowBtnId}`,
               type: 'click',
               fn: () => {
                 this._delRow()
@@ -175,7 +175,7 @@ class Table {
             },
             {
               // 删除列
-              selector: '#' + delColBtnId,
+              selector: `#${delColBtnId}`,
               type: 'click',
               fn: () => {
                 this._delCol()
@@ -185,7 +185,7 @@ class Table {
             },
             {
               // 删除表格
-              selector: '#' + delTableBtnId,
+              selector: `#${delTableBtnId}`,
               type: 'click',
               fn: () => {
                 this._delTable()

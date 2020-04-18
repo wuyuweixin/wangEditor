@@ -42,10 +42,10 @@ class Video {
           // 事件绑定
           events: [
             {
-              selector: '#' + btnId,
+              selector: `#${btnId}`,
               type: 'click',
               fn: () => {
-                const $text = $('#' + textValId)
+                const $text = $(`#${textValId}`)
                 const val = $text.val().trim()
 
                 // 测试用视频地址
@@ -75,7 +75,7 @@ class Video {
   // 插入视频
   _insert(val) {
     const editor = this.editor
-    editor.cmd.do('insertHTML', val + '<p><br></p>')
+    editor.cmd.do('insertHTML', `${val}<p><br></p>`)
   }
 }
 

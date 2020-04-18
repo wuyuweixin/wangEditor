@@ -9,7 +9,7 @@ class Image {
   constructor(editor) {
     this.editor = editor
     const imgMenuId = getRandom('w-e-img')
-    this.$elem = $('<div class="w-e-menu" id="' + imgMenuId + '"><i class="w-e-icon-image"></i></div>')
+    this.$elem = $(`<div class="w-e-menu" id="${imgMenuId}"><i class="w-e-icon-image"></i></div>`)
     editor.imgMenuId = imgMenuId
     this.type = 'panel'
 
@@ -56,7 +56,7 @@ class Image {
                 </div>`,
         events: [
           {
-            selector: '#' + width30,
+            selector: `#${width30}`,
             type: 'click',
             fn: () => {
               const $img = editor._selectedImg
@@ -68,7 +68,7 @@ class Image {
             }
           },
           {
-            selector: '#' + width50,
+            selector: `#${width50}`,
             type: 'click',
             fn: () => {
               const $img = editor._selectedImg
@@ -80,7 +80,7 @@ class Image {
             }
           },
           {
-            selector: '#' + width100,
+            selector: `#${width100}`,
             type: 'click',
             fn: () => {
               const $img = editor._selectedImg
@@ -92,7 +92,7 @@ class Image {
             }
           },
           {
-            selector: '#' + delBtn,
+            selector: `#${delBtn}`,
             type: 'click',
             fn: () => {
               const $img = editor._selectedImg
@@ -144,10 +144,10 @@ class Image {
         events: [
           {
             // 触发选择图片
-            selector: '#' + upTriggerId,
+            selector: `#${upTriggerId}`,
             type: 'click',
             fn: () => {
-              const $file = $('#' + upFileId)
+              const $file = $(`#${upFileId}`)
               const fileElem = $file[0]
               if (fileElem) {
                 fileElem.click()
@@ -159,10 +159,10 @@ class Image {
           },
           {
             // 选择图片完毕
-            selector: '#' + upFileId,
+            selector: `#${upFileId}`,
             type: 'change',
             fn: () => {
-              const $file = $('#' + upFileId)
+              const $file = $(`#${upFileId}`)
               const fileElem = $file[0]
               if (!fileElem) {
                 // 返回 true 可关闭 panel
@@ -191,10 +191,10 @@ class Image {
                 </div>`,
         events: [
           {
-            selector: '#' + linkBtnId,
+            selector: `#${linkBtnId}`,
             type: 'click',
             fn: () => {
-              const $linkUrl = $('#' + linkUrlId)
+              const $linkUrl = $(`#${linkUrlId}`)
               const url = $linkUrl.val().trim()
 
               if (url) {

@@ -18,7 +18,7 @@ class UploadImg {
     const customAlert = editor.config.customAlert
 
     if (debug) {
-      throw new Error('wangEditor: ' + (debugInfo || alertInfo))
+      throw new Error(`wangEditor: ${debugInfo || alertInfo}`)
     } else {
       if (isFunction(customAlert)) {
         customAlert(alertInfo)
@@ -133,11 +133,12 @@ class UploadImg {
     })
     // 抛出验证信息
     if (errInfo.length) {
-      this._alert('图片验证未通过: \n' + errInfo.join('\n'))
+      this._alert(`图片验证未通过: 
+${errInfo.join('\n')}`)
       return
     }
     if (resultFiles.length > maxLength) {
-      this._alert('一次最多上传' + maxLength + '张图片')
+      this._alert(`一次最多上传${maxLength}张图片`)
       return
     }
 
@@ -172,14 +173,14 @@ class UploadImg {
           } else {
             uploadImgServer += '?'
           }
-          uploadImgServer = uploadImgServer + key + '=' + val
+          uploadImgServer = `${uploadImgServer + key}=${val}`
         }
 
         // 第二，将参数添加到 formdata 中
         formdata.append(key, val)
       })
       if (uploadImgServerHash) {
-        uploadImgServer += '#' + uploadImgServerHash
+        uploadImgServer += `#${uploadImgServerHash}`
       }
 
       // 定义 xhr
@@ -235,7 +236,7 @@ class UploadImg {
                 hooks.fail(xhr, editor, result)
               }
 
-              this._alert('上传图片失败', '上传图片返回结果错误，返回结果是: ' + result)
+              this._alert('上传图片失败', `上传图片返回结果错误，返回结果是: ${result}`)
               return
             }
           }
@@ -246,7 +247,7 @@ class UploadImg {
             }
 
             // 数据错误
-            this._alert('上传图片失败', '上传图片返回结果错误，返回结果 errno=' + result.errno)
+            this._alert('上传图片失败', `上传图片返回结果错误，返回结果 errno=${result.errno}`)
           } else {
             if (isFunction(hooks.customInsert)) {
               // 使用者自定义插入方法

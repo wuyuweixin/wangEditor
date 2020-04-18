@@ -77,10 +77,10 @@ class Code {
           events: [
             // 插入代码
             {
-              selector: '#' + btnId,
+              selector: `#${btnId}`,
               type: 'click',
               fn: () => {
-                const $text = $('#' + textId)
+                const $text = $(`#${textId}`)
                 let text = $text.val() || $text.html()
                 text = replaceHtmlSymbol(text)
                 if (type === 'new') {

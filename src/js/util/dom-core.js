@@ -247,7 +247,7 @@ class DomElement {
             return i.trim()
           })
           if (arr.length === 2) {
-            resultArr.push(arr[0] + ':' + arr[1])
+            resultArr.push(`${arr[0]}:${arr[1]}`)
           }
         })
         // 替换或者新增

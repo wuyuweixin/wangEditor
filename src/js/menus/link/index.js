@@ -76,12 +76,12 @@ class Link {
           events: [
             // 插入链接
             {
-              selector: '#' + btnOkId,
+              selector: `#${btnOkId}`,
               type: 'click',
               fn: () => {
                 // 执行插入链接
-                const $link = $('#' + inputLinkId)
-                const $text = $('#' + inputTextId)
+                const $link = $(`#${inputLinkId}`)
+                const $text = $(`#${inputTextId}`)
                 const link = $link.val()
                 const text = $text.val()
                 this._insertLink(text, link)
@@ -92,7 +92,7 @@ class Link {
             },
             // 删除链接
             {
-              selector: '#' + btnDelId,
+              selector: `#${btnDelId}`,
               type: 'click',
               fn: () => {
                 // 执行删除链接
@@ -125,7 +125,7 @@ class Link {
       return
     }
     const selectionText = editor.selection.getSelectionText()
-    editor.cmd.do('insertHTML', '<span>' + selectionText + '</span>')
+    editor.cmd.do('insertHTML', `<span>${selectionText}</span>`)
   }
 
   // 插入链接
