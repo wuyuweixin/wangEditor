@@ -3,8 +3,8 @@
 */
 
 import $ from '../util/dom-core.js'
-import { getPasteText, getPasteHtml, getPasteImgs } from '../util/paste-handle.js'
-import { UA, isFunction, replaceHtmlSymbol } from '../util/util.js'
+import {getPasteHtml, getPasteImgs, getPasteText} from '../util/paste-handle.js'
+import {isFunction, replaceHtmlSymbol, UA} from '../util/util.js'
 
 // 获取一个 elem.childNodes 的 JSON 数据
 function getChildrenJSON($elem) {
@@ -47,28 +47,24 @@ function getChildrenJSON($elem) {
     return result
 }
 
-// 构造函数
-function Text(editor) {
-    this.editor = editor
-}
-
-// 修改原型
-Text.prototype = {
-    constructor: Text,
+class Text {
+    constructor(editor) {
+        this.editor = editor
+    }
 
     // 初始化
-    init: function () {
+    init() {
         // 绑定事件
         this._bindEvent()
-    },
+    }
 
     // 清空内容
-    clear: function () {
+    clear() {
         this.html('<p><br></p>')
-    },
+    }
 
     // 获取 设置 html
-    html: function (val) {
+    html(val) {
         const editor = this.editor
         const $textElem = editor.$textElem
         let html
@@ -83,17 +79,17 @@ Text.prototype = {
             // 初始化选取，将光标定位到内容尾部
             editor.initSelection()
         }
-    },
+    }
 
     // 获取 JSON
-    getJSON: function () {
+    getJSON() {
         const editor = this.editor
         const $textElem = editor.$textElem
         return getChildrenJSON($textElem)
-    },
+    }
 
     // 获取 设置 text
-    text: function (val) {
+    text(val) {
         const editor = this.editor
         const $textElem = editor.$textElem
         let text
@@ -108,20 +104,20 @@ Text.prototype = {
             // 初始化选取，将光标定位到内容尾部
             editor.initSelection()
         }
-    },
+    }
 
     // 追加内容
-    append: function (html) {
+    append(html) {
         const editor = this.editor
         const $textElem = editor.$textElem
         $textElem.append($(html))
 
         // 初始化选取，将光标定位到内容尾部
         editor.initSelection()
-    },
+    }
 
     // 绑定事件
-    _bindEvent: function () {
+    _bindEvent() {
         // 实时保存选取
         this._saveRangeRealTime()
 
@@ -142,39 +138,40 @@ Text.prototype = {
 
         // 拖拽事件
         this._dragHandle()
-    },
+    }
 
     // 实时保存选取
-    _saveRangeRealTime: function () {
+    _saveRangeRealTime() {
         const editor = this.editor
         const $textElem = editor.$textElem
 
         // 保存当前的选区
-        function saveRange(e) {
+        function saveRange() {
             // 随时保存选区
             editor.selection.saveRange()
             // 更新按钮 ative 状态
             editor.menus.changeActive()
         }
+
         // 按键后保存
         $textElem.on('keyup', saveRange)
-        $textElem.on('mousedown', e => {
+        $textElem.on('mousedown', () => {
             // mousedown 状态下，鼠标滑动到编辑区域外面，也需要保存选区
             $textElem.on('mouseleave', saveRange)
         })
-        $textElem.on('mouseup', e => {
+        $textElem.on('mouseup', () => {
             saveRange()
             // 在编辑器区域之内完成点击，取消鼠标滑动到编辑区外面的事件
             $textElem.off('mouseleave', saveRange)
         })
-    },
+    }
 
     // 按回车键时的特殊处理
-    _enterKeyHandle: function () {
+    _enterKeyHandle() {
         const editor = this.editor
         const $textElem = editor.$textElem
 
-        function insertEmptyP ($selectionElem) {
+        function insertEmptyP($selectionElem) {
             const $p = $('<p><br></p>')
             $p.insertBefore($selectionElem)
             editor.selection.createRangeByElem($p, true)
@@ -183,7 +180,7 @@ Text.prototype = {
         }
 
         // 将回车之后生成的非 <p> 的顶级标签，改为 <p>
-        function pHandle(e) {
+        function pHandle() {
             const $selectionElem = editor.selection.getSelectionContainerElem()
             const $parentElem = $selectionElem.parent()
 
@@ -290,10 +287,10 @@ Text.prototype = {
             // <pre><code></code></pre> 回车时 特殊处理
             codeHandle(e)
         })
-    },
+    }
 
     // 清空时保留 <p><br></p>
-    _clearHandle: function () {
+    _clearHandle() {
         const editor = this.editor
         const $textElem = editor.$textElem
 
@@ -305,7 +302,6 @@ Text.prototype = {
             if (txtHtml === '<p><br></p>') {
                 // 最后剩下一个空行，就不再删除了
                 e.preventDefault()
-                return
             }
         })
 
@@ -327,10 +323,10 @@ Text.prototype = {
             }
         })
 
-    },
+    }
 
     // 粘贴事件（粘贴文字 粘贴图片）
-    _pasteHandle: function () {
+    _pasteHandle() {
         const editor = this.editor
         const config = editor.config
         const pasteFilterStyle = config.pasteFilterStyle
@@ -341,9 +337,10 @@ Text.prototype = {
         // 粘贴图片、文本的事件，每次只能执行一个
         // 判断该次粘贴事件是否可以执行
         let pasteTime = 0
+
         function canDo() {
-            var now = Date.now()
-            var flag = false
+            const now = Date.now()
+            let flag = false
             if (now - pasteTime >= 100) {
                 // 间隔大于 100 ms ，可以执行
                 flag = true
@@ -351,6 +348,7 @@ Text.prototype = {
             pasteTime = now
             return flag
         }
+
         function resetTime() {
             pasteTime = 0
         }
@@ -454,10 +452,10 @@ Text.prototype = {
             const uploadImg = editor.uploadImg
             uploadImg.uploadImg(pasteFiles)
         })
-    },
+    }
 
     // tab 特殊处理
-    _tabHandle: function () {
+    _tabHandle() {
         const editor = this.editor
         const $textElem = editor.$textElem
 
@@ -488,15 +486,15 @@ Text.prototype = {
             e.preventDefault()
         })
 
-    },
+    }
 
     // img 点击
-    _imgHandle: function () {
+    _imgHandle() {
         const editor = this.editor
         const $textElem = editor.$textElem
 
         // 为图片增加 selected 样式
-        $textElem.on('click', 'img', function (e) {
+        $textElem.on('click', 'img', _ => {
             const img = this
             const $img = $(img)
 
@@ -522,10 +520,10 @@ Text.prototype = {
             // 删除记录
             editor._selectedImg = null
         })
-    },
+    }
 
     // 拖拽事件
-    _dragHandle: function () {
+    _dragHandle() {
         const editor = this.editor
 
         // 禁用 document 拖拽事件

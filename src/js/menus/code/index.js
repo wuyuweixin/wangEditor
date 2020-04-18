@@ -2,29 +2,25 @@
     menu - code
 */
 import $ from '../../util/dom-core.js'
-import { getRandom, replaceHtmlSymbol } from '../../util/util.js'
+import {getRandom, replaceHtmlSymbol} from '../../util/util.js'
 import Panel from '../panel.js'
-import { UA } from '../../util/util.js'
 
 // 构造函数
-function Code(editor) {
-    this.editor = editor
-    this.$elem = $(
-        `<div class="w-e-menu">
+class Code {
+    constructor(editor) {
+        this.editor = editor
+        this.$elem = $(
+            `<div class="w-e-menu">
             <i class="w-e-icon-terminal"></i>
         </div>`
-    )
-    this.type = 'panel'
+        )
+        this.type = 'panel'
 
-    // 当前是否 active 状态
-    this._active = false
-}
+        // 当前是否 active 状态
+        this._active = false
+    }
 
-// 原型
-Code.prototype = {
-    constructor: Code,
-
-    onClick: function (e) {
+    onClick(_) {
         const editor = this.editor
         const $startElem = editor.selection.getSelectionStartElem()
         const $endElem = editor.selection.getSelectionEndElem()
@@ -54,9 +50,9 @@ Code.prototype = {
             // 未选中状态，将创建内容
             this._createPanel()
         }
-    },
+    }
 
-    _createPanel: function (value) {
+    _createPanel(value) {
         // value - 要编辑的内容
         value = value || ''
         const type = !value ? 'new' : 'edit'
@@ -109,16 +105,16 @@ Code.prototype = {
 
         // 记录属性
         this.panel = panel
-    },
+    }
 
     // 插入代码
-    _insertCode: function (value) {
+    _insertCode(value) {
         const editor = this.editor
         editor.cmd.do('insertHTML', `<pre><code>${value}</code></pre><p><br></p>`)
-    },
+    }
 
     // 更新代码
-    _updateCode: function (value) {
+    _updateCode(value) {
         const editor = this.editor
         const $selectionELem = editor.selection.getSelectionContainerElem()
         if (!$selectionELem) {
@@ -126,10 +122,10 @@ Code.prototype = {
         }
         $selectionELem.html(value)
         editor.selection.restoreSelection()
-    },
+    }
 
     // 试图改变 active 状态
-    tryChangeActive: function (e) {
+    tryChangeActive(_) {
         const editor = this.editor
         const $elem = this.$elem
         const $selectionELem = editor.selection.getSelectionContainerElem()

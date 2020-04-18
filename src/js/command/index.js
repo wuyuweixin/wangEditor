@@ -3,19 +3,16 @@
 */
 
 import $ from '../util/dom-core.js'
-import { UA } from '../util/util.js'
 
-// 构造函数
-function Command(editor) {
-    this.editor = editor
-}
 
-// 修改原型
-Command.prototype = {
-    constructor: Command,
+class Command {
+
+    constructor(editor) {
+        this.editor = editor
+    }
 
     // 执行命令
-    do: function (name, value) {
+    do(name, value) {
         const editor = this.editor
 
         // 使用 styleWithCSS
@@ -33,7 +30,7 @@ Command.prototype = {
         editor.selection.restoreSelection()
 
         // 执行
-        const _name = '_' + name
+        const _name = `_${name}`
         if (this[_name]) {
             // 有自定义事件
             this[_name](value)
@@ -51,10 +48,10 @@ Command.prototype = {
 
         // 触发 onchange
         editor.change && editor.change()
-    },
+    }
 
     // 自定义 insertHTML 事件
-    _insertHTML: function (html) {
+    _insertHTML(html) {
         const editor = this.editor
         const range = editor.selection.getRange()
 
@@ -68,11 +65,11 @@ Command.prototype = {
         } else if (range.pasteHTML) {
             // IE <= 10
             range.pasteHTML(html)
-        } 
-    },
+        }
+    }
 
     // 插入 elem
-    _insertElem: function ($elem) {
+    _insertElem($elem) {
         const editor = this.editor
         const range = editor.selection.getRange()
 
@@ -80,25 +77,25 @@ Command.prototype = {
             range.deleteContents()
             range.insertNode($elem[0])
         }
-    },
+    }
 
     // 封装 execCommand
-    _execCommand: function (name, value) {
+    _execCommand(name, value) {
         document.execCommand(name, false, value)
-    },
+    }
 
     // 封装 document.queryCommandValue
-    queryCommandValue: function (name) {
+    queryCommandValue(name) {
         return document.queryCommandValue(name)
-    },
+    }
 
     // 封装 document.queryCommandState
-    queryCommandState: function (name) {
+    queryCommandState(name) {
         return document.queryCommandState(name)
-    },
+    }
 
     // 封装 document.queryCommandSupported
-    queryCommandSupported: function (name) {
+    queryCommandSupported(name) {
         return document.queryCommandSupported(name)
     }
 }

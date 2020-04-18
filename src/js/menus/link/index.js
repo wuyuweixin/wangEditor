@@ -2,25 +2,22 @@
     menu - link
 */
 import $ from '../../util/dom-core.js'
-import { getRandom } from '../../util/util.js'
+import {getRandom} from '../../util/util.js'
 import Panel from '../panel.js'
 
 // 构造函数
-function Link(editor) {
-    this.editor = editor
-    this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-link"></i></div>')
-    this.type = 'panel'
+class Link {
+    constructor(editor) {
+        this.editor = editor
+        this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-link"></i></div>')
+        this.type = 'panel'
 
-    // 当前是否 active 状态
-    this._active = false
-}
-
-// 原型
-Link.prototype = {
-    constructor: Link,
+        // 当前是否 active 状态
+        this._active = false
+    }
 
     // 点击事件
-    onClick: function (e) {
+    onClick(_) {
         const editor = this.editor
         let $linkelem
 
@@ -45,10 +42,10 @@ Link.prototype = {
                 this._createPanel(editor.selection.getSelectionText(), '')
             }
         }
-    },
+    }
 
     // 创建 panel
-    _createPanel: function (text, link) {
+    _createPanel(text, link) {
         // panel 中需要用到的id
         const inputLinkId = getRandom('input-link')
         const inputTextId = getRandom('input-text')
@@ -115,10 +112,10 @@ Link.prototype = {
 
         // 记录属性
         this.panel = panel
-    },
+    }
 
     // 删除当前链接
-    _delLink: function () {
+    _delLink() {
         if (!this._active) {
             return
         }
@@ -129,10 +126,10 @@ Link.prototype = {
         }
         const selectionText = editor.selection.getSelectionText()
         editor.cmd.do('insertHTML', '<span>' + selectionText + '</span>')
-    },
+    }
 
     // 插入链接
-    _insertLink: function (text, link) {
+    _insertLink(text, link) {
         const editor = this.editor
         const config = editor.config
         const linkCheck = config.linkCheck
@@ -145,10 +142,10 @@ Link.prototype = {
         } else {
             alert(checkResult)
         }
-    },
+    }
 
     // 试图改变 active 状态
-    tryChangeActive: function (e) {
+    tryChangeActive(_) {
         const editor = this.editor
         const $elem = this.$elem
         const $selectionELem = editor.selection.getSelectionContainerElem()

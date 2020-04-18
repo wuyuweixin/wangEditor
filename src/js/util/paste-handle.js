@@ -2,9 +2,7 @@
     粘贴信息的处理
 */
 
-import $ from './dom-core.js'
-import { replaceHtmlSymbol } from './util.js'
-import { objForEach } from './util.js'
+import {objForEach, replaceHtmlSymbol} from './util.js'
 
 // 获取粘贴的纯文本
 export function getPasteText(e) {
@@ -47,7 +45,7 @@ export function getPasteHtml(e, filterStyle, ignoreImg) {
     // 去掉注释
     pasteHtml = pasteHtml.replace(/<!--.*?-->/mg, '')
     // 过滤 data-xxx 属性
-    pasteHtml = pasteHtml.replace(/\s?data-.+?=('|").+?('|")/igm, '')
+    pasteHtml = pasteHtml.replace(/\s?data-.+?=(['"]).+?(['"])/igm, '')
 
     if (ignoreImg) {
         // 忽略图片
@@ -56,10 +54,10 @@ export function getPasteHtml(e, filterStyle, ignoreImg) {
 
     if (filterStyle) {
         // 过滤样式
-        pasteHtml = pasteHtml.replace(/\s?(class|style)=('|").*?('|")/igm, '')
+        pasteHtml = pasteHtml.replace(/\s?(class|style)=(['"]).*?(['"])/igm, '')
     } else {
         // 保留样式
-        pasteHtml = pasteHtml.replace(/\s?class=('|").*?('|")/igm, '')
+        pasteHtml = pasteHtml.replace(/\s?class=(['"]).*?(['"])/igm, '')
     }
 
     return pasteHtml

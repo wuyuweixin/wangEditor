@@ -4,20 +4,18 @@
 
 import $ from '../../util/dom-core.js'
 
-function Progress(editor) {
-    this.editor = editor
-    this._time = 0
-    this._isShow = false
-    this._isRender = false
-    this._timeoutId = 0
-    this.$textContainer = editor.$textContainerElem
-    this.$bar = $('<div class="w-e-progress"></div>')
-}
+class Progress {
+    constructor(editor) {
+        this.editor = editor
+        this._time = 0
+        this._isShow = false
+        this._isRender = false
+        this._timeoutId = 0
+        this.$textContainer = editor.$textContainerElem
+        this.$bar = $('<div class="w-e-progress"></div>')
+    }
 
-Progress.prototype = {
-    constructor: Progress,
-
-    show: function (progress) {
+    show(progress) {
         // 状态处理
         if (this._isShow) {
             return
@@ -46,12 +44,12 @@ Progress.prototype = {
         if (timeoutId) {
             clearTimeout(timeoutId)
         }
-        timeoutId = setTimeout(() => {
+        setTimeout(() => {
             this._hide()
         }, 500)
-    },
+    }
 
-    _hide: function () {
+    _hide() {
         const $bar = this.$bar
         $bar.remove()
 

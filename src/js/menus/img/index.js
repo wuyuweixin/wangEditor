@@ -2,26 +2,22 @@
     menu - img
 */
 import $ from '../../util/dom-core.js'
-import { getRandom, arrForEach } from '../../util/util.js'
+import {getRandom} from '../../util/util.js'
 import Panel from '../panel.js'
 
-// 构造函数
-function Image(editor) {
-    this.editor = editor
-    const imgMenuId = getRandom('w-e-img')
-    this.$elem = $('<div class="w-e-menu" id="' + imgMenuId + '"><i class="w-e-icon-image"></i></div>')
-    editor.imgMenuId = imgMenuId
-    this.type = 'panel'
+class Image {
+    constructor(editor) {
+        this.editor = editor
+        const imgMenuId = getRandom('w-e-img')
+        this.$elem = $('<div class="w-e-menu" id="' + imgMenuId + '"><i class="w-e-icon-image"></i></div>')
+        editor.imgMenuId = imgMenuId
+        this.type = 'panel'
 
-    // 当前是否 active 状态
-    this._active = false
-}
+        // 当前是否 active 状态
+        this._active = false
+    }
 
-// 原型
-Image.prototype = {
-    constructor: Image,
-
-    onClick: function () {
+    onClick() {
         const editor = this.editor
         const config = editor.config
         if (config.qiniu) {
@@ -32,9 +28,9 @@ Image.prototype = {
         } else {
             this._createInsertPanel()
         }
-    },
+    }
 
-    _createEditPanel: function () {
+    _createEditPanel() {
         const editor = this.editor
 
         // id
@@ -120,9 +116,9 @@ Image.prototype = {
 
         // 记录属性
         this.panel = panel
-    },
+    }
 
-    _createInsertPanel: function () {
+    _createInsertPanel() {
         const editor = this.editor
         const uploadImg = editor.uploadImg
         const config = editor.config
@@ -233,10 +229,10 @@ Image.prototype = {
 
         // 记录属性
         this.panel = panel
-    },
+    }
 
     // 试图改变 active 状态
-    tryChangeActive: function (e) {
+    tryChangeActive(_) {
         const editor = this.editor
         const $elem = this.$elem
         if (editor._selectedImg) {

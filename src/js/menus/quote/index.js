@@ -2,27 +2,22 @@
     menu - quote
 */
 import $ from '../../util/dom-core.js'
-import { UA } from '../../util/util.js'
+import {UA} from '../../util/util.js'
 
-// 构造函数
-function Quote(editor) {
-    this.editor = editor
-    this.$elem = $(
-        `<div class="w-e-menu">
+class Quote {
+    constructor(editor) {
+        this.editor = editor
+        this.$elem = $(
+            `<div class="w-e-menu">
             <i class="w-e-icon-quotes-left"></i>
         </div>`
-    )
-    this.type = 'click'
+        )
+        this.type = 'click'
 
-    // 当前是否 active 状态
-    this._active = false
-}
-
-// 原型
-Quote.prototype = {
-    constructor: Quote,
-
-    onClick: function (e) {
+        // 当前是否 active 状态
+        this._active = false
+    }
+    onClick (_) {
         const editor = this.editor
         const $selectionElem = editor.selection.getSelectionContainerElem()
         const nodeName = $selectionElem.getNodeName()
@@ -37,7 +32,7 @@ Quote.prototype = {
             }
             return
         }
-        
+
         // IE 中不支持 formatBlock <BLOCKQUOTE> ，要用其他方式兼容
         let content, $targetELem
         if (nodeName === 'P') {
@@ -55,9 +50,9 @@ Quote.prototype = {
             $targetELem.insertAfter($selectionElem)
             $selectionElem.remove()
         }
-    },
+    }
 
-    tryChangeActive: function (e) {
+    tryChangeActive (_) {
         const editor = this.editor
         const $elem = this.$elem
         const reg = /^BLOCKQUOTE$/i

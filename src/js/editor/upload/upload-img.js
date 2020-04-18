@@ -2,21 +2,18 @@
     上传图片
 */
 
-import { objForEach, arrForEach, percentFormat } from '../../util/util.js'
+import {arrForEach, objForEach} from '../../util/util.js'
 import Progress from './progress.js'
-import { UA } from '../../util/util.js'
+import {isFunction} from '../../util/util'
 
-// 构造函数
-function UploadImg(editor) {
-    this.editor = editor
-}
 
-// 原型
-UploadImg.prototype = {
-    constructor: UploadImg,
+class UploadImg {
+    constructor(editor) {
+        this.editor = editor
+    }
 
     // 根据 debug 弹出不同的信息
-    _alert: function (alertInfo, debugInfo) {
+    _alert(alertInfo, debugInfo) {
         const editor = this.editor
         const debug = editor.config.debug
         const customAlert = editor.config.customAlert
@@ -24,16 +21,16 @@ UploadImg.prototype = {
         if (debug) {
             throw new Error('wangEditor: ' + (debugInfo || alertInfo))
         } else {
-            if (customAlert && typeof customAlert === 'function') {
+            if (isFunction(customAlert)) {
                 customAlert(alertInfo)
             } else {
                 alert(alertInfo)
             }
         }
-    },
+    }
 
     // 根据链接插入图片
-    insertLinkImg: function (link) {
+    insertLinkImg(link) {
         if (!link) {
             return
         }
@@ -43,7 +40,7 @@ UploadImg.prototype = {
         // 校验格式
         const linkImgCheck = config.linkImgCheck
         let checkResult
-        if (linkImgCheck && typeof linkImgCheck === 'function') {
+        if (isFunction(linkImgCheck)) {
             checkResult = linkImgCheck(link)
             if (typeof checkResult === 'string') {
                 // 校验失败，提示信息
@@ -52,13 +49,13 @@ UploadImg.prototype = {
             }
         }
 
-        editor.cmd.do('insertHTML', `<img src="${link}" style="max-width:100%;"/>`)
+        editor.cmd.do('insertHTML', `<img alt="图片" src="${link}" style="max-width:100%;"/>`)
 
         // 验证图片 url 是否有效，无效的话给出提示
         let img = document.createElement('img')
         img.onload = () => {
             const callback = config.linkImgCallback
-            if (callback && typeof callback === 'function') {
+            if (isFunction(callback)) {
                 callback(link)
             }
 
@@ -68,16 +65,15 @@ UploadImg.prototype = {
             img = null
             // 无法成功下载图片
             this._alert('插入图片错误', `wangEditor: 插入图片出错，图片链接是 "${link}"，下载该链接失败`)
-            return
         }
         img.onabort = () => {
             img = null
         }
         img.src = link
-    },
+    }
 
     // 上传图片
-    uploadImg: function (files) {
+    uploadImg(files) {
         if (!files || !files.length) {
             return
         }
@@ -114,8 +110,8 @@ UploadImg.prototype = {
         const resultFiles = []
         let errInfo = []
         arrForEach(files, file => {
-            var name = file.name
-            var size = file.size
+            const name = file.name
+            const size = file.size
 
             // chrome 低版本 name === undefined
             if (!name || !size) {
@@ -147,9 +143,8 @@ UploadImg.prototype = {
         }
 
         // ------------------------------ 自定义上传 ------------------------------
-        if (customUploadImg && typeof customUploadImg === 'function') {
+        if (isFunction(customUploadImg)) {
             customUploadImg(resultFiles, this.insertLinkImg.bind(this))
-
             // 阻止以下代码执行
             return
         }
@@ -196,7 +191,7 @@ UploadImg.prototype = {
             xhr.timeout = timeout
             xhr.ontimeout = () => {
                 // hook - timeout
-                if (hooks.timeout && typeof hooks.timeout === 'function') {
+                if (isFunction(hooks.timeout)) {
                     hooks.timeout(xhr, editor)
                 }
 
@@ -222,7 +217,7 @@ UploadImg.prototype = {
                 if (xhr.readyState === 4) {
                     if (xhr.status < 200 || xhr.status >= 300) {
                         // hook - error
-                        if (hooks.error && typeof hooks.error === 'function') {
+                        if (isFunction(hooks.error)) {
                             hooks.error(xhr, editor)
                         }
 
@@ -237,7 +232,7 @@ UploadImg.prototype = {
                             result = JSON.parse(result)
                         } catch (ex) {
                             // hook - fail
-                            if (hooks.fail && typeof hooks.fail === 'function') {
+                            if (isFunction(hooks.fail)) {
                                 hooks.fail(xhr, editor, result)
                             }
 
@@ -245,16 +240,16 @@ UploadImg.prototype = {
                             return
                         }
                     }
-                    if (!hooks.customInsert && result.errno != '0') {
+                    if (!hooks.customInsert && result.errno !== '0') {
                         // hook - fail
-                        if (hooks.fail && typeof hooks.fail === 'function') {
+                        if (isFunction(hooks.fail)) {
                             hooks.fail(xhr, editor, result)
                         }
 
                         // 数据错误
                         this._alert('上传图片失败', '上传图片返回结果错误，返回结果 errno=' + result.errno)
                     } else {
-                        if (hooks.customInsert && typeof hooks.customInsert === 'function') {
+                        if (isFunction(hooks.customInsert)) {
                             // 使用者自定义插入方法
                             hooks.customInsert(this.insertLinkImg.bind(this), result, editor)
                         } else {
@@ -266,7 +261,7 @@ UploadImg.prototype = {
                         }
 
                         // hook - success
-                        if (hooks.success && typeof hooks.success === 'function') {
+                        if (isFunction(hooks.success)) {
                             hooks.success(xhr, editor, result)
                         }
                     }
@@ -274,7 +269,7 @@ UploadImg.prototype = {
             }
 
             // hook - before
-            if (hooks.before && typeof hooks.before === 'function') {
+            if (isFunction(hooks.before)) {
                 const beforeResult = hooks.before(xhr, editor, resultFiles)
                 if (beforeResult && typeof beforeResult === 'object') {
                     if (beforeResult.prevent) {
@@ -306,7 +301,7 @@ UploadImg.prototype = {
                 const _this = this
                 const reader = new FileReader()
                 reader.readAsDataURL(file)
-                reader.onload = function () {
+                reader.onload = () => {
                     _this.insertLinkImg(this.result)
                 }
             })

@@ -7,36 +7,33 @@ import _config from '../config.js'
 import Menus from '../menus/index.js'
 import Text from '../text/index.js'
 import Command from '../command/index.js'
-import selectionAPI from '../selection/index.js'
+import SelectionAPI from '../selection/index.js'
 import UploadImg from './upload/upload-img.js'
-import { arrForEach, objForEach } from '../util/util.js'
-import { getRandom } from '../util/util.js'
+import {getRandom, objForEach} from '../util/util.js'
+import {isFunction} from '../util/util'
 
 // id，累加
 let editorId = 1
 
-// 构造函数
-function Editor(toolbarSelector, textSelector) {
-    if (toolbarSelector == null) {
-        // 没有传入任何参数，报错
-        throw new Error('错误：初始化编辑器时候未传入任何参数，请查阅文档')
+class Editor {
+    // 构造函数
+    constructor(toolbarSelector, textSelector) {
+        if (toolbarSelector == null) {
+            // 没有传入任何参数，报错
+            throw new Error('错误：初始化编辑器时候未传入任何参数，请查阅文档')
+        }
+        // id，用以区分单个页面不同的编辑器对象
+        this.id = 'wangEditor-' + editorId++
+
+        this.toolbarSelector = toolbarSelector
+        this.textSelector = textSelector
+
+        // 自定义配置
+        this.customConfig = {}
     }
-    // id，用以区分单个页面不同的编辑器对象
-    this.id = 'wangEditor-' + editorId++
-
-    this.toolbarSelector = toolbarSelector
-    this.textSelector = textSelector
-
-    // 自定义配置
-    this.customConfig = {}
-}
-
-// 修改原型
-Editor.prototype = {
-    constructor: Editor,
 
     // 初始化配置
-    _initConfig: function () {
+    _initConfig() {
         // _config 是默认配置，this.customConfig 是用户自定义配置，将它们 merge 之后再赋值
         let target = {}
         this.config = Object.assign(target, _config, this.customConfig)
@@ -54,10 +51,10 @@ Editor.prototype = {
             })
         })
         this.config.langArgs = langArgs
-    },
+    }
 
     // 初始化 DOM
-    _initDom: function () {
+    _initDom() {
         const toolbarSelector = this.toolbarSelector
         const $toolbarSelector = $(toolbarSelector)
         const textSelector = this.textSelector
@@ -81,10 +78,10 @@ Editor.prototype = {
 
             // 自行创建的，需要配置默认的样式
             $toolbarElem.css('background-color', '#f1f1f1')
-                            .css('border', '1px solid #ccc')
+                .css('border', '1px solid #ccc')
             $textContainerElem.css('border', '1px solid #ccc')
-                            .css('border-top', 'none')
-                            .css('height', '300px')
+                .css('border-top', 'none')
+                .css('height', '300px')
         } else {
             // toolbar 和 text 的选择器都有值，记录属性
             $toolbarElem = $toolbarSelector
@@ -96,8 +93,8 @@ Editor.prototype = {
         // 编辑区域
         $textElem = $('<div></div>')
         $textElem.attr('contenteditable', 'true')
-                .css('width', '100%')
-                .css('height', '100%')
+            .css('width', '100%')
+            .css('height', '100%')
 
         // 初始化编辑区域内容
         if ($children && $children.length) {
@@ -142,37 +139,37 @@ Editor.prototype = {
         // 绑定 onchange
         $textContainerElem.on('click keyup', () => {
             // 输入法结束才出发 onchange
-            compositionEnd && this.change &&  this.change()
+            compositionEnd && this.change && this.change()
         })
-        $toolbarElem.on('click', function () {
-            this.change &&  this.change()
+        $toolbarElem.on('click', () => {
+            this.change && this.change()
         })
 
         //绑定 onfocus 与 onblur 事件
-        if(config.onfocus || config.onblur){
+        if (config.onfocus || config.onblur) {
             // 当前编辑器是否是焦点状态
             this.isFocus = false
-            
+
             $(document).on('click', (e) => {
                 //判断当前点击元素是否在编辑器内
                 const isChild = $textElem.isContain($(e.target))
-                
+
                 //判断当前点击元素是否为工具栏
                 const isToolbar = $toolbarElem.isContain($(e.target))
-                const isMenu = $toolbarElem[0] == e.target ? true : false
+                const isMenu = $toolbarElem[0] === e.target
 
                 if (!isChild) {
                     //若为选择工具栏中的功能，则不视为成blur操作
-                    if(isToolbar && !isMenu){
+                    if (isToolbar && !isMenu) {
                         return
                     }
 
-                    if(this.isFocus){
+                    if (this.isFocus) {
                         this.onblur && this.onblur()
                     }
                     this.isFocus = false
-                }else{
-                    if(!this.isFocus){
+                } else {
+                    if (!this.isFocus) {
                         this.onfocus && this.onfocus()
                     }
                     this.isFocus = true
@@ -180,37 +177,37 @@ Editor.prototype = {
             })
         }
 
-    },
+    }
 
     // 封装 command
-    _initCommand: function () {
+    _initCommand() {
         this.cmd = new Command(this)
-    },
+    }
 
     // 封装 selection range API
-    _initSelectionAPI: function () {
-        this.selection = new selectionAPI(this)
-    },
+    _initSelectionAPI() {
+        this.selection = new SelectionAPI(this)
+    }
 
     // 添加图片上传
-    _initUploadImg: function () {
+    _initUploadImg() {
         this.uploadImg = new UploadImg(this)
-    },
+    }
 
     // 初始化菜单
-    _initMenus: function () {
+    _initMenus() {
         this.menus = new Menus(this)
         this.menus.init()
-    },
+    }
 
     // 添加 text 区域
-    _initText: function () {
+    _initText() {
         this.txt = new Text(this)
         this.txt.init()
-    },
+    }
 
     // 初始化选区，将光标定位到内容尾部
-    initSelection: function (newLine) {
+    initSelection(newLine) {
         const $textElem = this.$textElem
         const $children = $textElem.children()
         if (!$children.length) {
@@ -236,10 +233,10 @@ Editor.prototype = {
 
         this.selection.createRangeByElem($last, false, true)
         this.selection.restoreSelection()
-    },
+    }
 
     // 绑定事件
-    _bindEvent: function () {
+    _bindEvent() {
         // -------- 绑定 onchange 事件 --------
         let onChangeTimeoutId = 0
         let beforeChangeHtml = this.txt.html()
@@ -253,12 +250,12 @@ Editor.prototype = {
         }
 
         const onchange = config.onchange
-        if (onchange && typeof onchange === 'function'){
+        if (isFunction(onchange)) {
             // 触发 change 的有三个场景：
             // 1. $textContainerElem.on('click keyup')
             // 2. $toolbarElem.on('click')
             // 3. editor.cmd.do()
-            this.change = function () {
+            this.change = () => {
                 // 判断是否有变化
                 let currentHtml = this.txt.html()
 
@@ -278,13 +275,13 @@ Editor.prototype = {
                     onchange(currentHtml)
                     beforeChangeHtml = currentHtml
                 }, onchangeTimeout)
-            }   
+            }
         }
 
         // -------- 绑定 onblur 事件 --------
         const onblur = config.onblur
-        if (onblur && typeof onblur === 'function') {
-            this.onblur = function () {
+        if (isFunction(onblur)) {
+            this.onblur = () => {
                 const currentHtml = this.txt.html()
                 onblur(currentHtml)
             }
@@ -292,16 +289,14 @@ Editor.prototype = {
 
         // -------- 绑定 onfocus 事件 --------
         const onfocus = config.onfocus
-        if (onfocus && typeof onfocus === 'function') {
-            this.onfocus = function () {
-                onfocus()
-            }
+        if (isFunction(onfocus)) {
+            this.onfocus = onfocus
         }
-        
-    },
+
+    }
 
     // 创建编辑器
-    create: function () {
+    create() {
         // 初始化配置信息
         this._initConfig()
 
@@ -328,10 +323,10 @@ Editor.prototype = {
 
         // 绑定事件
         this._bindEvent()
-    },
+    }
 
     // 解绑所有事件（暂时不对外开放）
-    _offAllEvent: function () {
+    _offAllEvent() {
         $.offAll()
     }
 }

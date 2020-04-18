@@ -5,28 +5,25 @@ import $ from '../../util/dom-core.js'
 import Panel from '../panel.js'
 
 // 构造函数
-function Emoticon(editor) {
-    this.editor = editor
-    this.$elem = $(
-        `<div class="w-e-menu">
+class Emoticon {
+    constructor(editor) {
+        this.editor = editor
+        this.$elem = $(
+            `<div class="w-e-menu">
             <i class="w-e-icon-happy"></i>
         </div>`
-    )
-    this.type = 'panel'
+        )
+        this.type = 'panel'
 
-    // 当前是否 active 状态
-    this._active = false
-}
+        // 当前是否 active 状态
+        this._active = false
+    }
 
-// 原型
-Emoticon.prototype = {
-    constructor: Emoticon,
-
-    onClick: function () {
+    onClick() {
         this._createPanel()
-    },
+    }
 
-    _createPanel: function () {
+    _createPanel() {
         const editor = this.editor
         const config = editor.config
         // 获取表情配置
@@ -103,13 +100,14 @@ Emoticon.prototype = {
 
         // 记录属性
         this.panel = panel
-    },
+    }
 
     // 插入表情
-    _insert: function (emotHtml) {
+    _insert(emotHtml) {
         const editor = this.editor
         editor.cmd.do('insertHTML', emotHtml)
     }
+
 }
 
 export default Emoticon

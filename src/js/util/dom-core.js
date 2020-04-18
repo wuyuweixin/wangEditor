@@ -15,10 +15,7 @@ function isDOMList(selector) {
     if (!selector) {
         return false
     }
-    if (selector instanceof HTMLCollection || selector instanceof NodeList) {
-        return true
-    }
-    return false
+    return selector instanceof HTMLCollection || selector instanceof NodeList
 }
 
 // 封装 document.querySelectorAll
@@ -34,63 +31,59 @@ function querySelectorAll(selector) {
 // 记录所有的事件绑定
 const eventList = []
 
-// 创建构造函数
-function DomElement(selector) {
-    if (!selector) {
-        return
-    }
-
-    // selector 本来就是 DomElement 对象，直接返回
-    if (selector instanceof DomElement) {
-        return selector
-    }
-
-    this.selector = selector
-    const nodeType = selector.nodeType
-
-    // 根据 selector 得出的结果（如 DOM，DOM List）
-    let selectorResult = []
-    if (nodeType === 9) {
-        // document 节点
-        selectorResult = [selector]
-    } else if (nodeType === 1) {
-        // 单个 DOM 节点
-        selectorResult = [selector]
-    } else if (isDOMList(selector) || selector instanceof Array) {
-        // DOM List 或者数组
-        selectorResult = selector
-    } else if (typeof selector === 'string') {
-        // 字符串
-        selector = selector.replace('/\n/mg', '').trim()
-        if (selector.indexOf('<') === 0) {
-            // 如 <div>
-            selectorResult = createElemByHTML(selector)
-        } else {
-            // 如 #id .class
-            selectorResult = querySelectorAll(selector)
+class DomElement {
+    constructor(selector) {
+        if (!selector) {
+            return
         }
-    }
 
-    const length = selectorResult.length
-    if (!length) {
-        // 空数组
-        return this
-    }
+        // selector 本来就是 DomElement 对象，直接返回
+        if (selector instanceof DomElement) {
+            return selector
+        }
 
-    // 加入 DOM 节点
-    let i
-    for (i = 0; i < length; i++) {
-        this[i] = selectorResult[i]
-    }
-    this.length = length
-}
+        this.selector = selector
+        const nodeType = selector.nodeType
 
-// 修改原型
-DomElement.prototype = {
-    constructor: DomElement,
+        // 根据 selector 得出的结果（如 DOM，DOM List）
+        let selectorResult = []
+        if (nodeType === 9) {
+            // document 节点
+            selectorResult = [selector]
+        } else if (nodeType === 1) {
+            // 单个 DOM 节点
+            selectorResult = [selector]
+        } else if (isDOMList(selector) || selector instanceof Array) {
+            // DOM List 或者数组
+            selectorResult = selector
+        } else if (typeof selector === 'string') {
+            // 字符串
+            selector = selector.replace('/\n/mg', '').trim()
+            if (selector.indexOf('<') === 0) {
+                // 如 <div>
+                selectorResult = createElemByHTML(selector)
+            } else {
+                // 如 #id .class
+                selectorResult = querySelectorAll(selector)
+            }
+        }
+
+        const length = selectorResult.length
+        if (!length) {
+            // 空数组
+            return this
+        }
+
+        // 加入 DOM 节点
+        let i
+        for (i = 0; i < length; i++) {
+            this[i] = selectorResult[i]
+        }
+        this.length = length
+    }
 
     // 类数组，forEach
-    forEach: function (fn) {
+    forEach(fn) {
         let i
         for (i = 0; i < this.length; i++) {
             const elem = this[i]
@@ -100,39 +93,39 @@ DomElement.prototype = {
             }
         }
         return this
-    },
+    }
 
     // clone
-    clone: function (deep) {
+    clone(deep) {
         const cloneList = []
         this.forEach(elem => {
             cloneList.push(elem.cloneNode(!!deep))
         })
         return $(cloneList)
-    },
+    }
 
     // 获取第几个元素
-    get: function (index) {
+    get(index) {
         const length = this.length
         if (index >= length) {
             index = index % length
         }
         return $(this[index])
-    },
+    }
 
     // 第一个
-    first: function () {
+    first() {
         return this.get(0)
-    },
+    }
 
     // 最后一个
-    last: function () {
+    last() {
         const length = this.length
         return this.get(length - 1)
-    },
+    }
 
     // 绑定事件
-    on: function (type, selector, fn) {
+    on(type, selector, fn) {
         // selector 不为空，证明绑定事件要加代理
         if (!fn) {
             fn = selector
@@ -171,17 +164,17 @@ DomElement.prototype = {
                 })
             })
         })
-    },
+    }
 
     // 取消事件绑定
-    off: function (type, fn) {
+    off(type, fn) {
         return this.forEach(elem => {
             elem.removeEventListener(type, fn)
         })
-    },
+    }
 
     // 获取/设置 属性
-    attr: function (key, val) {
+    attr(key, val) {
         if (val == null) {
             // 获取值
             return this[0].getAttribute(key)
@@ -191,10 +184,10 @@ DomElement.prototype = {
                 elem.setAttribute(key, val)
             })
         }
-    },
+    }
 
     // 添加 class
-    addClass: function(className) {
+    addClass(className) {
         if (!className) {
             return this
         }
@@ -216,10 +209,10 @@ DomElement.prototype = {
                 elem.className = className
             }
         })
-    },
+    }
 
     // 删除 class
-    removeClass: function (className) {
+    removeClass(className) {
         if (!className) {
             return this
         }
@@ -231,19 +224,16 @@ DomElement.prototype = {
                 arr = arr.filter(item => {
                     item = item.trim()
                     // 删除 class
-                    if (!item || item === className) {
-                        return false
-                    }
-                    return true
+                    return !(!item || item === className)
                 })
                 // 修改 elem.class
                 elem.className = arr.join(' ')
             }
         })
-    },
+    }
 
     // 修改 css
-    css: function (key, val) {
+    css(key, val) {
         const currentStyle = `${key}:${val};`
         return this.forEach(elem => {
             const style = (elem.getAttribute('style') || '').trim()
@@ -278,49 +268,49 @@ DomElement.prototype = {
                 elem.setAttribute('style', currentStyle)
             }
         })
-    },
+    }
 
     // 显示
-    show: function () {
+    show() {
         return this.css('display', 'block')
-    },
+    }
 
     // 隐藏
-    hide: function () {
+    hide() {
         return this.css('display', 'none')
-    },
+    }
 
     // 获取子节点
-    children: function () {
+    children() {
         const elem = this[0]
         if (!elem) {
             return null
         }
 
         return $(elem.children)
-    },
+    }
 
     // 获取子节点（包括文本节点）
-    childNodes: function () {
+    childNodes() {
         const elem = this[0]
         if (!elem) {
             return null
         }
 
         return $(elem.childNodes)
-    },
+    }
 
     // 增加子节点
-    append: function($children) {
+    append($children) {
         return this.forEach(elem => {
             $children.forEach(child => {
                 elem.appendChild(child)
             })
         })
-    },
+    }
 
     // 移除当前节点
-    remove: function () {
+    remove() {
         return this.forEach(elem => {
             if (elem.remove) {
                 elem.remove()
@@ -329,35 +319,35 @@ DomElement.prototype = {
                 parent && parent.removeChild(elem)
             }
         })
-    },
+    }
 
     // 是否包含某个子节点
-    isContain: function ($child) {
+    isContain($child) {
         const elem = this[0]
         const child = $child[0]
         return elem.contains(child)
-    },
+    }
 
     // 尺寸数据
-    getSizeData: function () {
+    getSizeData() {
         const elem = this[0]
         return elem.getBoundingClientRect()  // 可得到 bottom height left right top width 的数据
-    },
+    }
 
     // 封装 nodeName
-    getNodeName: function () {
+    getNodeName() {
         const elem = this[0]
         return elem.nodeName
-    },
+    }
 
     // 从当前元素查找
-    find: function (selector) {
+    find(selector) {
         const elem = this[0]
         return $(elem.querySelectorAll(selector))
-    },
+    }
 
     // 获取当前元素的 text
-    text: function (val) {
+    text(val) {
         if (!val) {
             // 获取 text
             const elem = this[0]
@@ -368,10 +358,10 @@ DomElement.prototype = {
                 elem.innerHTML = val
             })
         }
-    },
+    }
 
     // 获取 html
-    html: function (value) {
+    html(value) {
         const elem = this[0]
         if (value == null) {
             return elem.innerHTML
@@ -379,29 +369,29 @@ DomElement.prototype = {
             elem.innerHTML = value
             return this
         }
-    },
+    }
 
     // 获取 value
-    val: function () {
+    val() {
         const elem = this[0]
         return elem.value.trim()
-    },
+    }
 
     // focus
-    focus: function () {
+    focus() {
         return this.forEach(elem => {
             elem.focus()
         })
-    },
+    }
 
     // parent
-    parent: function () {
+    parent() {
         const elem = this[0]
         return $(elem.parentElement)
-    },
+    }
 
     // parentUntil 找到符合 selector 的父节点
-    parentUntil: function (selector, _currentElem) {
+    parentUntil(selector, _currentElem) {
         const results = document.querySelectorAll(selector)
         const length = results.length
         if (!length) {
@@ -425,19 +415,19 @@ DomElement.prototype = {
 
         // 继续查找
         return this.parentUntil(selector, parent)
-    },
+    }
 
     // 判断两个 elem 是否相等
-    equal: function ($elem) {
+    equal($elem) {
         if ($elem.nodeType === 1) {
             return this[0] === $elem
         } else {
             return this[0] === $elem[0]
         }
-    },
+    }
 
     // 将该元素插入到某个元素前面
-    insertBefore: function (selector) {
+    insertBefore(selector) {
         const $referenceNode = $(selector)
         const referenceNode = $referenceNode[0]
         if (!referenceNode) {
@@ -447,10 +437,10 @@ DomElement.prototype = {
             const parent = referenceNode.parentNode
             parent.insertBefore(elem, referenceNode)
         })
-    },
+    }
 
     // 将该元素插入到某个元素后面
-    insertAfter: function (selector) {
+    insertAfter(selector) {
         const $referenceNode = $(selector)
         const referenceNode = $referenceNode[0]
         if (!referenceNode) {
@@ -469,13 +459,10 @@ DomElement.prototype = {
     }
 }
 
-// new 一个对象
-function $(selector) {
-    return new DomElement(selector)
-}
+const $ = selector => new DomElement(selector)
 
 // 解绑所有事件，用于销毁编辑器
-$.offAll = function () {
+$.offAll = () => {
     eventList.forEach(item => {
         const elem = item.elem
         const type = item.type

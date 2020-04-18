@@ -4,23 +4,21 @@
 
 import $ from '../util/dom-core.js'
 import replaceLang from '../util/replace-lang.js'
-const emptyFn = () => {}
+
+const emptyFn = () => {
+}
 
 // 记录已经显示 panel 的菜单
 let _isCreatedPanelMenus = []
 
-// 构造函数
-function Panel(menu, opt) {
-    this.menu = menu
-    this.opt = opt
-}
-
-// 原型
-Panel.prototype = {
-    constructor: Panel,
+class Panel {
+    constructor(menu, opt) {
+        this.menu = menu
+        this.opt = opt
+    }
 
     // 显示（插入DOM）
-    show: function () {
+    show() {
         const menu = this.menu
         if (_isCreatedPanelMenus.indexOf(menu) >= 0) {
             // 该菜单已经创建了 panel 不能再创建
@@ -36,7 +34,7 @@ Panel.prototype = {
         const $container = $('<div class="w-e-panel-container"></div>')
         const width = opt.width || 300 // 默认 300px
         $container.css('width', width + 'px')
-                .css('margin-left', (0 - width)/2 + 'px')
+            .css('margin-left', (0 - width) / 2 + 'px')
 
         // 添加关闭按钮
         const $closeBtn = $('<i class="w-e-icon-close w-e-panel-close"></i>')
@@ -55,7 +53,7 @@ Panel.prototype = {
         if (height) {
             $tabContentContainer.css('height', height + 'px').css('overflow-y', 'auto')
         }
-        
+
         // tabs
         const tabs = opt.tabs || []
         const tabTitleArr = []
@@ -91,7 +89,7 @@ Panel.prototype = {
             }
 
             // 绑定 tab 的事件
-            $title.on('click', e => {
+            $title.on('click', _ => {
                 if ($title._active) {
                     return
                 }
@@ -116,7 +114,7 @@ Panel.prototype = {
             // 点击时阻止冒泡
             e.stopPropagation()
         })
-        $body.on('click', e => {
+        $body.on('click', _ => {
             this.hide()
         })
 
@@ -158,10 +156,10 @@ Panel.prototype = {
         this._hideOtherPanels()
         // 记录该 menu 已经创建了 panel
         _isCreatedPanelMenus.push(menu)
-    },
+    }
 
     // 隐藏（移除DOM）
-    hide: function () {
+    hide() {
         const menu = this.menu
         const $container = this.$container
         if ($container) {
@@ -169,17 +167,11 @@ Panel.prototype = {
         }
 
         // 将该 menu 记录中移除
-        _isCreatedPanelMenus = _isCreatedPanelMenus.filter(item => {
-            if (item === menu) {
-                return false
-            } else {
-                return true
-            }
-        })
-    },
+        _isCreatedPanelMenus = _isCreatedPanelMenus.filter(item => item !== menu)
+    }
 
     // 一个 panel 展示时，隐藏其他 panel
-    _hideOtherPanels: function () {
+    _hideOtherPanels() {
         if (!_isCreatedPanelMenus.length) {
             return
         }

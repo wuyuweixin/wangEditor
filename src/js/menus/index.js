@@ -1,21 +1,18 @@
 /*
     菜单集合
 */
-import { objForEach } from '../util/util.js'
+import {objForEach} from '../util/util.js'
 import MenuConstructors from './menu-list.js'
 
 // 构造函数
-function Menus(editor) {
-    this.editor = editor
-    this.menus = {}
-}
-
-// 修改原型
-Menus.prototype = {
-    constructor: Menus,
+class Menus {
+    constructor(editor) {
+        this.editor = editor
+        this.menus = {}
+    }
 
     // 初始化菜单
-    init: function () {
+    init() {
         const editor = this.editor
         const config = editor.config || {}
         const configMenus = config.menus || []  // 获取配置中的菜单
@@ -34,10 +31,10 @@ Menus.prototype = {
 
         // 绑定事件
         this._bindEvent()
-    },
+    }
 
     // 添加到菜单栏
-    _addToToolbar: function () {
+    _addToToolbar() {
         const editor = this.editor
         const $toolbarElem = editor.$toolbarElem
         const menus = this.menus
@@ -52,10 +49,10 @@ Menus.prototype = {
                 $toolbarElem.append($elem)
             }
         })
-    },
+    }
 
     // 绑定菜单 click mouseenter 事件
-    _bindEvent: function () {
+    _bindEvent() {
         const menus = this.menus
         const editor = this.editor
         objForEach(menus, (key, menu) => {
@@ -107,10 +104,10 @@ Menus.prototype = {
                 })
             }
         })
-    },
+    }
 
     // 尝试修改菜单状态
-    changeActive: function () {
+    changeActive() {
         const menus = this.menus
         objForEach(menus, (key, menu) => {
             if (menu.tryChangeActive) {

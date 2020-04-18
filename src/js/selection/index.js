@@ -3,25 +3,21 @@
 */
 
 import $ from '../util/dom-core.js'
-import { UA } from '../util/util.js'
+import {UA} from '../util/util.js'
 
-// 构造函数
-function API(editor) {
-    this.editor = editor
-    this._currentRange = null
-}
-
-// 修改原型
-API.prototype = {
-    constructor: API,
+class API {
+    constructor(editor) {
+        this.editor = editor
+        this._currentRange = null
+    }
 
     // 获取 range 对象
-    getRange: function () {
+    getRange() {
         return this._currentRange
-    },
+    }
 
     // 保存选区
-    saveRange: function (_range) {
+    saveRange(_range) {
         if (_range) {
             // 保存已有选区
             this._currentRange = _range
@@ -52,10 +48,10 @@ API.prototype = {
             // 是编辑内容之内的
             this._currentRange = range
         }
-    },
+    }
 
     // 折叠选区
-    collapseRange: function (toStart) {
+    collapseRange(toStart) {
         if (toStart == null) {
             // 默认为 false
             toStart = false
@@ -64,20 +60,20 @@ API.prototype = {
         if (range) {
             range.collapse(toStart)
         }
-    },
+    }
 
     // 选中区域的文字
-    getSelectionText: function () {
+    getSelectionText() {
         const range = this._currentRange
         if (range) {
             return this._currentRange.toString()
         } else {
             return ''
         }
-    },
+    }
 
     // 选区的 $Elem
-    getSelectionContainerElem: function (range) {
+    getSelectionContainerElem(range) {
         range = range || this._currentRange
         let elem
         if (range) {
@@ -86,8 +82,9 @@ API.prototype = {
                 elem.nodeType === 1 ? elem : elem.parentNode
             )
         }
-    },
-    getSelectionStartElem: function (range) {
+    }
+
+    getSelectionStartElem(range) {
         range = range || this._currentRange
         let elem
         if (range) {
@@ -96,8 +93,9 @@ API.prototype = {
                 elem.nodeType === 1 ? elem : elem.parentNode
             )
         }
-    },
-    getSelectionEndElem: function (range) {
+    }
+
+    getSelectionEndElem(range) {
         range = range || this._currentRange
         let elem
         if (range) {
@@ -106,10 +104,10 @@ API.prototype = {
                 elem.nodeType === 1 ? elem : elem.parentNode
             )
         }
-    },
+    }
 
     // 选区是否为空
-    isSelectionEmpty: function () {
+    isSelectionEmpty() {
         const range = this._currentRange
         if (range && range.startContainer) {
             if (range.startContainer === range.endContainer) {
@@ -119,17 +117,17 @@ API.prototype = {
             }
         }
         return false
-    },
+    }
 
     // 恢复选区
-    restoreSelection: function () {
+    restoreSelection() {
         const selection = window.getSelection()
         selection.removeAllRanges()
         selection.addRange(this._currentRange)
-    },
+    }
 
     // 创建一个空白（即 &#8203 字符）选区
-    createEmptyRange: function () {
+    createEmptyRange() {
         const editor = this.editor
         const range = this.getRange()
         let $elem
@@ -160,10 +158,10 @@ API.prototype = {
         } catch (ex) {
             // 部分情况下会报错，兼容一下
         }
-    },
+    }
 
     // 根据 $Elem 设置选区
-    createRangeByElem: function ($elem, toStart, isContent) {
+    createRangeByElem($elem, toStart, isContent) {
         // $elem - 经过封装的 elem
         // toStart - true 开始位置，false 结束位置
         // isContent - 是否选中Elem的内容

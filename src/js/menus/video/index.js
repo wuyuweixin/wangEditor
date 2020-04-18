@@ -2,28 +2,25 @@
     menu - video
 */
 import $ from '../../util/dom-core.js'
-import { getRandom } from '../../util/util.js'
+import {getRandom} from '../../util/util.js'
 import Panel from '../panel.js'
 
-// 构造函数
-function Video(editor) {
-    this.editor = editor
-    this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-play"></i></div>')
-    this.type = 'panel'
 
-    // 当前是否 active 状态
-    this._active = false
-}
+class Video {
+    constructor(editor) {
+        this.editor = editor
+        this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-play"></i></div>')
+        this.type = 'panel'
 
-// 原型
-Video.prototype = {
-    constructor: Video,
+        // 当前是否 active 状态
+        this._active = false
+    }
 
-    onClick: function () {
+    onClick() {
         this._createPanel()
-    },
+    }
 
-    _createPanel: function () {
+    _createPanel() {
         // 创建 id
         const textValId = getRandom('text-val')
         const btnId = getRandom('btn')
@@ -74,10 +71,10 @@ Video.prototype = {
 
         // 记录属性
         this.panel = panel
-    },
+    }
 
     // 插入视频
-    _insert: function (val) {
+    _insert(val) {
         const editor = this.editor
         editor.cmd.do('insertHTML', val + '<p><br></p>')
     }

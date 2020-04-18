@@ -2,24 +2,21 @@
     menu - table
 */
 import $ from '../../util/dom-core.js'
-import { getRandom } from '../../util/util.js'
+import {getRandom} from '../../util/util.js'
 import Panel from '../panel.js'
 
-// 构造函数
-function Table(editor) {
-    this.editor = editor
-    this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-table2"></i></div>')
-    this.type = 'panel'
 
-    // 当前是否 active 状态
-    this._active = false
-}
+class Table {
+    constructor(editor) {
+        this.editor = editor
+        this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-table2"></i></div>')
+        this.type = 'panel'
 
-// 原型
-Table.prototype = {
-    constructor: Table,
+        // 当前是否 active 状态
+        this._active = false
+    }
 
-    onClick: function () {
+    onClick() {
         if (this._active) {
             // 编辑现有表格
             this._createEditPanel()
@@ -27,10 +24,10 @@ Table.prototype = {
             // 插入新表格
             this._createInsertPanel()
         }
-    },
+    }
 
     // 创建插入新表格的 panel
-    _createInsertPanel: function () {
+    _createInsertPanel() {
         // 用到的 id
         const btnInsertId = getRandom('btn')
         const textRowNum = getRandom('row')
@@ -85,10 +82,10 @@ Table.prototype = {
 
         // 记录属性
         this.panel = panel
-    },
+    }
 
     // 插入表格
-    _insert: function (rowNum, colNum) {
+    _insert(rowNum, colNum) {
         // 拼接 table 模板
         let r, c
         let html = '<table border="0" width="100%" cellpadding="0" cellspacing="0">'
@@ -114,10 +111,10 @@ Table.prototype = {
         // 防止 firefox 下出现 resize 的控制点
         editor.cmd.do('enableObjectResizing', false)
         editor.cmd.do('enableInlineTableEditing', false)
-    },
+    }
 
     // 创建编辑表格的 panel
-    _createEditPanel: function () {
+    _createEditPanel() {
         // 可用的 id
         const addRowBtnId = getRandom('add-row')
         const addColBtnId = getRandom('add-col')
@@ -203,10 +200,10 @@ Table.prototype = {
         })
         // 显示 panel
         panel.show()
-    },
+    }
 
     // 获取选中的单元格的位置信息
-    _getLocationData: function () {
+    _getLocationData() {
         const result = {}
         const editor = this.editor
         const $selectionELem = editor.selection.getSelectionContainerElem()
@@ -252,10 +249,10 @@ Table.prototype = {
 
         // 返回结果
         return result
-    },
+    }
 
     // 增加行
-    _addRow: function () {
+    _addRow() {
         // 获取当前单元格的位置信息
         const locationData = this._getLocationData()
         if (!locationData) {
@@ -275,10 +272,10 @@ Table.prototype = {
         newTr.innerHTML = tpl
         // 插入
         $(newTr).insertAfter($currentTr)
-    },
+    }
 
     // 增加列
-    _addCol: function () {
+    _addCol() {
         // 获取当前单元格的位置信息
         const locationData = this._getLocationData()
         if (!locationData) {
@@ -302,10 +299,10 @@ Table.prototype = {
             const newTd = document.createElement(name)
             $(newTd).insertAfter($currentTd)
         })
-    },
+    }
 
     // 删除行
-    _delRow: function () {
+    _delRow() {
         // 获取当前单元格的位置信息
         const locationData = this._getLocationData()
         if (!locationData) {
@@ -314,10 +311,10 @@ Table.prototype = {
         const trData = locationData.tr
         const $currentTr = $(trData.elem)
         $currentTr.remove()
-    },
+    }
 
     // 删除列
-    _delCol: function () {
+    _delCol() {
         // 获取当前单元格的位置信息
         const locationData = this._getLocationData()
         if (!locationData) {
@@ -338,10 +335,10 @@ Table.prototype = {
             // 删除
             $currentTd.remove()
         })
-    },
+    }
 
     // 删除表格
-    _delTable: function () {
+    _delTable() {
         const editor = this.editor
         const $selectionELem = editor.selection.getSelectionContainerElem()
         if (!$selectionELem) {
@@ -352,10 +349,10 @@ Table.prototype = {
             return
         }
         $table.remove()
-    },
+    }
 
     // 试图改变 active 状态
-    tryChangeActive: function (e) {
+    tryChangeActive(_) {
         const editor = this.editor
         const $elem = this.$elem
         const $selectionELem = editor.selection.getSelectionContainerElem()
