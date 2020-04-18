@@ -4,8 +4,7 @@
 
 // 根据 html 代码片段创建 dom 对象
 function createElemByHTML(html) {
-  let div
-  div = document.createElement('div')
+  const div = document.createElement('div')
   div.innerHTML = html
   return div.children
 }
@@ -244,7 +243,7 @@ class DomElement {
         styleArr = style.split(';')
         styleArr.forEach(item => {
           // 对每项样式，按照 : 拆分为 key 和 value
-          let arr = item.split(':').map(i => {
+          const arr = item.split(':').map(i => {
             return i.trim()
           })
           if (arr.length === 2) {

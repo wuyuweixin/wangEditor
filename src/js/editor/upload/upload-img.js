@@ -107,7 +107,7 @@ class UploadImg {
 
     // ------------------------------ 验证文件信息 ------------------------------
     const resultFiles = []
-    let errInfo = []
+    const errInfo = []
     arrForEach(files, file => {
       const name = file.name
       const size = file.size

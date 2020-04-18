@@ -22,7 +22,7 @@ export const UA = {
 export function objForEach(obj, fn) {
   let key, result
   for (key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.hasOwnProperty.call(obj, key)) {
       result = fn.call(obj, key, obj[key])
       if (result === false) {
         break

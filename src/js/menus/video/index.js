@@ -34,7 +34,7 @@ class Video {
           title: '插入视频',
           // 模板
           tpl: `<div>
-                        <input id="${textValId}" type="text" class="block" placeholder="格式如：<iframe src=... ><\/iframe>"/>
+                        <input id="${textValId}" type="text" class="block" placeholder="格式如：<iframe src=... ></iframe>"/>
                         <div class="w-e-button-container">
                             <button id="${btnId}" class="right">插入</button>
                         </div>

@@ -15,7 +15,7 @@ polyfill()
 const inlinecss = '__INLINE_CSS__'
 
 // 将 css 代码添加到 <style> 中
-let style = document.createElement('style')
+const style = document.createElement('style')
 style.type = 'text/css'
 style.innerHTML = inlinecss
 document.getElementsByTagName('HEAD').item(0).appendChild(style)

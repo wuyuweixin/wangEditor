@@ -40,7 +40,7 @@ class Progress {
     }
 
     // 隐藏
-    let timeoutId = this._timeoutId
+    const timeoutId = this._timeoutId
     if (timeoutId) {
       clearTimeout(timeoutId)
     }

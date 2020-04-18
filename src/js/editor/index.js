@@ -35,7 +35,7 @@ class Editor {
   // 初始化配置
   _initConfig() {
     // _config 是默认配置，this.customConfig 是用户自定义配置，将它们 merge 之后再赋值
-    let target = {}
+    const target = {}
     this.config = Object.assign(target, _config, this.customConfig)
 
     // 将语言配置，生成正则表达式
@@ -62,7 +62,7 @@ class Editor {
     const zIndex = config.zIndex
 
     // 定义变量
-    let $toolbarElem, $textContainerElem, $textElem, $children
+    let $toolbarElem, $textContainerElem, $children
 
     if (textSelector == null) {
       // 只传入一个参数，即是容器的选择器或元素，toolbar 和 text 的元素自行创建
@@ -87,7 +87,7 @@ class Editor {
     }
 
     // 编辑区域
-    $textElem = $('<div></div>')
+    const $textElem = $('<div></div>')
     $textElem.attr('contenteditable', 'true').css('width', '100%').css('height', '100%')
 
     // 初始化编辑区域内容
@@ -250,7 +250,7 @@ class Editor {
       // 3. editor.cmd.do()
       this.change = () => {
         // 判断是否有变化
-        let currentHtml = this.txt.html()
+        const currentHtml = this.txt.html()
 
         if (currentHtml.length === beforeChangeHtml.length) {
           // 需要比较每一个字符

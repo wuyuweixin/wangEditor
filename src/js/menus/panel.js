@@ -142,7 +142,7 @@ class Panel {
     })
 
     // focus 第一个 elem
-    let $inputs = $container.find('input[type=text],textarea')
+    const $inputs = $container.find('input[type=text],textarea')
     if ($inputs.length) {
       $inputs.get(0).focus()
     }
