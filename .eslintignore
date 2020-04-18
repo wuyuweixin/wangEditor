@@ -1,2 +1,7 @@
 src/js/util/ierange.js
 src/js/util/poly-fill.js
+gulpfile.js
+docs
+example
+node_modules
+release
