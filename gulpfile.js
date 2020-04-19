@@ -36,6 +36,15 @@ function css(cb) {
   cb()
 }
 
+function transpileCSS(cb) {
+  src('./src/less/**/*.less')
+    .pipe(less())
+    .pipe(concat('wangEditor.css'))
+    .pipe(postcss([autoprefixer, cssgrace]))
+    .pipe(dest('./release'))
+  cb()
+}
+
 // 处理 JS
 async function script(cb) {
   try {
@@ -90,15 +99,6 @@ async function transpileJS(cb) {
   } catch (e) {
     console.error(e)
   }
-  cb()
-}
-
-function transpileCSS(cb) {
-  src('./src/less/**/*.less')
-    .pipe(less())
-    .pipe(concat('wangEditor.css'))
-    .pipe(postcss([autoprefixer, cssgrace]))
-    .pipe(dest('./release'))
   cb()
 }
 
