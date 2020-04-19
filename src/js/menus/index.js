@@ -4,7 +4,6 @@
 import { objForEach } from '../util/util.js'
 import MenuConstructors from './menu-list.js'
 
-// 构造函数
 class Menus {
   constructor(editor) {
     this.editor = editor

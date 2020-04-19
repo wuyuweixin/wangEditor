@@ -5,7 +5,6 @@ import $ from '../../util/dom-core.js'
 import { getRandom } from '../../util/util.js'
 import Panel from '../panel.js'
 
-// 构造函数
 class Link {
   constructor(editor) {
     this.editor = editor

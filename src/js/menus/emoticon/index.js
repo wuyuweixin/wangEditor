@@ -4,7 +4,6 @@
 import $ from '../../util/dom-core.js'
 import Panel from '../panel.js'
 
-// 构造函数
 class Emoticon {
   constructor(editor) {
     this.editor = editor

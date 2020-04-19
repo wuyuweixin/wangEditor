@@ -5,7 +5,6 @@ import $ from '../../util/dom-core.js'
 import { getRandom, replaceHtmlSymbol } from '../../util/util.js'
 import Panel from '../panel.js'
 
-// 构造函数
 class Code {
   constructor(editor) {
     this.editor = editor

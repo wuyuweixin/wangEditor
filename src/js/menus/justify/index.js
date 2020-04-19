@@ -23,8 +23,8 @@ class Justify {
         { $elem: $('<span><i class="w-e-icon-paragraph-center"></i> 居中</span>'), value: 'justifyCenter' },
         { $elem: $('<span><i class="w-e-icon-paragraph-right"></i> 靠右</span>'), value: 'justifyRight' }
       ],
-      onClick(value) {
-        // 注意 this 是指向当前的 List 对象
+      onClick: value => {
+        // 注意 this 是指 Justify 对象
         this._command(value)
       }
     })

@@ -4,7 +4,6 @@
 import $ from '../../util/dom-core.js'
 import DropList from '../droplist.js'
 
-// 构造函数
 class ForeColor {
   constructor(editor) {
     this.editor = editor

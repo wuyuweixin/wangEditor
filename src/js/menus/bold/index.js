@@ -3,7 +3,6 @@
 */
 import $ from '../../util/dom-core.js'
 
-// 构造函数
 class Bold {
   constructor(editor) {
     this.editor = editor

@@ -1,5 +1,5 @@
 /*
-    编辑器构造函数
+    编辑器
 */
 
 import $ from '../util/dom-core.js'
@@ -16,7 +16,6 @@ import { isFunction } from '../util/util'
 let editorId = 1
 
 class Editor {
-  // 构造函数
   constructor(toolbarSelector, textSelector) {
     if (toolbarSelector == null) {
       // 没有传入任何参数，报错
