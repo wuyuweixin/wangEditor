@@ -18,10 +18,12 @@ onerror(app)
 // post body 解析
 app.use(bodyParser())
 
-const exampleDir = path.join(__dirname, '..', '..', 'example')
-const releaseDir = path.join(__dirname, '..', '..', 'release')
-app.use(staticCache(exampleDir))
-app.use(staticCache(releaseDir))
+function setStaticCache() {
+  const exampleDir = path.join(__dirname, '..', '..', 'example')
+  const releaseDir = path.join(__dirname, '..', '..', 'release')
+  app.use(staticCache(exampleDir))
+  app.use(staticCache(releaseDir))
+}
 
 // 保存上传的文件
 function saveFiles(req) {
@@ -45,10 +47,16 @@ function saveFiles(req) {
         // 图片名称和路径
         const fileName = file.name
         const fullFileName = path.join(storePath, fileName)
+        const readStream = fs.createReadStream(tempFilePath)
+        const writeStream = fs.createWriteStream(fullFileName)
+        readStream.pipe(writeStream)
+        readStream.on('end', function() {
+          fs.unlinkSync(tempFilePath)
+        })
         // 将临时文件保存为正式文件
-        fs.renameSync(tempFilePath, fullFileName)
+        // fs.renameSync(tempFilePath, fullFileName)
         // 存储链接
-        imgLinks.push('/upload-files/' + fileName)
+        imgLinks.push(`/upload-files/${fileName}`)
       })
 
       // 重新设置静态文件缓存
@@ -82,9 +90,11 @@ app.use(async (ctx, next) => {
   }
 })
 
+setStaticCache()
+
 // 启动服务
 app.listen(3000)
 
-console.log('listening on http://localhost:%s', 3000)
+console.info('server listening on http://localhost:%s', 3000)
 
 module.exports = app
