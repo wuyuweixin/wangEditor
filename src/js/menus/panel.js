@@ -17,7 +17,7 @@ class Panel {
   }
 
   // 显示（插入DOM）
-  show() {
+  show(e) {
     const menu = this.menu
     if (_isCreatedPanelMenus.indexOf(menu) >= 0) {
       // 该菜单已经创建了 panel 不能再创建
@@ -32,7 +32,16 @@ class Panel {
     // panel 的容器
     const $container = $('<div class="w-e-panel-container"></div>')
     const width = opt.width || 300 // 默认 300px
-    $container.css('width', `${width}px`).css('margin-left', `${(0 - width) / 2}px`)
+    $container.css('width', `${width}px`)
+    if (e) {
+      if (e.clientX < width) {
+        $container.css('left', `${e.clientX - 30}px`)
+      } else {
+        $container.css('left', `${e.clientX - width}px`)
+      }
+    } else {
+      $container.css('margin-left', `${(0 - width) / 2}px`)
+    }
 
     // 添加关闭按钮
     const $closeBtn = $('<i class="w-e-icon-close w-e-panel-close"></i>')

@@ -18,11 +18,11 @@ class Emoticon {
     this._active = false
   }
 
-  onClick() {
-    this._createPanel()
+  onClick(e) {
+    this._createPanel(e)
   }
 
-  _createPanel() {
+  _createPanel(e) {
     const editor = this.editor
     const config = editor.config
     // 获取表情配置
@@ -95,7 +95,7 @@ class Emoticon {
     })
 
     // 显示 panel
-    panel.show()
+    panel.show(e)
 
     // 记录属性
     this.panel = panel
