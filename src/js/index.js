@@ -2,9 +2,8 @@ import polyfill from './util/poly-fill.js'
 import Editor from './editor/index.js'
 
 // 检验是否浏览器环境
-try {
-  document
-} catch (ex) {
+
+if (!document) {
   throw new Error('请在浏览器环境下运行')
 }
 
