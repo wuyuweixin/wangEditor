@@ -133,8 +133,7 @@ class UploadImg {
     })
     // 抛出验证信息
     if (errInfo.length) {
-      this._alert(`图片验证未通过: 
-${errInfo.join('\n')}`)
+      this._alert(`图片验证未通过:${errInfo.join('\n')}`)
       return
     }
     if (resultFiles.length > maxLength) {
@@ -150,10 +149,10 @@ ${errInfo.join('\n')}`)
     }
 
     // 添加图片数据
-    const formdata = new FormData()
+    const formData = new FormData()
     arrForEach(resultFiles, file => {
       const name = uploadFileName || file.name
-      formdata.append(name, file)
+      formData.append(name, file)
     })
 
     // ------------------------------ 上传图片 ------------------------------
@@ -176,8 +175,8 @@ ${errInfo.join('\n')}`)
           uploadImgServer = `${uploadImgServer + key}=${val}`
         }
 
-        // 第二，将参数添加到 formdata 中
-        formdata.append(key, val)
+        // 第二，将参数添加到 formData 中
+        formData.append(key, val)
       })
       if (uploadImgServerHash) {
         uploadImgServer += `#${uploadImgServerHash}`
@@ -227,6 +226,7 @@ ${errInfo.join('\n')}`)
           }
 
           result = xhr.responseText
+
           if (typeof result !== 'object') {
             try {
               result = JSON.parse(result)
@@ -240,7 +240,8 @@ ${errInfo.join('\n')}`)
               return
             }
           }
-          if (!hooks.customInsert && result.errno !== '0') {
+
+          if (result.errno !== 0) {
             // hook - fail
             if (isFunction(hooks.fail)) {
               hooks.fail(xhr, editor, result)
@@ -289,7 +290,7 @@ ${errInfo.join('\n')}`)
       xhr.withCredentials = withCredentials
 
       // 发送请求
-      xhr.send(formdata)
+      xhr.send(formData)
 
       // 注意，要 return 。不去操作接下来的 base64 显示方式
       return
@@ -298,12 +299,11 @@ ${errInfo.join('\n')}`)
     // ------------------------------ 显示 base64 格式 ------------------------------
     if (uploadImgShowBase64) {
       arrForEach(files, file => {
-        const _this = this
         const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-          _this.insertLinkImg(this.result)
+        reader.onload = (event) => {
+          this.insertLinkImg(event.target.result)
         }
+        reader.readAsDataURL(file)
       })
     }
   }
