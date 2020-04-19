@@ -300,7 +300,7 @@ class UploadImg {
     if (uploadImgShowBase64) {
       arrForEach(files, file => {
         const reader = new FileReader()
-        reader.onload = (event) => {
+        reader.onload = event => {
           this.insertLinkImg(event.target.result)
         }
         reader.readAsDataURL(file)
